@@ -1,0 +1,4 @@
+
+3. Таблица AdventureWorks2017.Person.Person. (created date 27.10.2017)
+
+4. Таблица AdventureWorksDW2017.dbo.DimPromotion. (data space 0,008MB)
