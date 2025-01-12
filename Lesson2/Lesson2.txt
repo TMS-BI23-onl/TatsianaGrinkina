@@ -1,0 +1,72 @@
+1. a) 
+SELECT *
+FROM Sales.SalesTerritory
+
+b)
+SELECT TerritoryID, Name
+FROM Sales.SalesTerritory
+
+c)
+SELECT *
+FROM Person.Person
+WHERE LastName = 'Norman'
+
+d)
+SELECT EmailPromotion
+FROM Person.Person
+WHERE EmailPromotion != 2
+
+3. Aggregate functions (Transact-SQL):
+APPROX_COUNT_DISTINCT, AVG, CHECKSUM_AGG, COUNT, COUNT_BIG, GROUPING, GROUPING_ID, MAX, MIN, STDEV, STDEVP, STRING_AGG, SUM, VAR, VARP
+
+Examples of using aggregate functions in code:
+
+SELECT TerritoryID, SUM(SalesYTD) AS 'SumSalesYTD', GROUPING(TerritoryID) AS 'Grouping'  --GROUPING
+FROM Sales.SalesPerson
+GROUP BY TerritoryID WITH ROLLUP
+
+SELECT STDEV(DISTINCT SalesLastYear) AS 'Distinct_Values', STDEV(SalesLastYear) AS 'All_Values'  --STDEV
+FROM Sales.SalesPerson
+
+SELECT VAR(DISTINCT CommissionPct) AS 'Distinct_Values', VAR(CommissionPct) AS 'All_Values'  --VAR
+FROM Sales.SalesPerson
+
+4.  
+e) 
+SELECT DISTINCT PersonType 
+FROM Person.Person
+WHERE LastName LIKE 'M%' 
+OR EmailPromotion != 1                    --6 rows
+
+f)
+SELECT TOP 3 *
+FROM Sales.SpecialOffer
+WHERE StartDate BETWEEN '2013-01-01' AND '2014-01-01'
+ORDER BY DiscountPct DESC
+
+g)
+SELECT MIN(Weight) AS 'MinWeight',
+MAX(Size) AS 'MaxSize'
+FROM Production.Product
+
+h)
+SELECT ProductSubcategoryID, 
+MIN(Weight) AS 'MinWeight', 
+MAX(Size) AS 'MaxSize'
+FROM Production.Product
+GROUP BY ProductSubcategoryID
+
+i)
+SELECT ProductSubcategoryID,
+MIN(Weight) AS 'MinWeight', 
+MAX(Size) AS 'MaxSize'
+FROM Production.Product
+WHERE Color IS NOT NULL 
+GROUP BY ProductSubcategoryID
+
+
+
+
+
+
+
