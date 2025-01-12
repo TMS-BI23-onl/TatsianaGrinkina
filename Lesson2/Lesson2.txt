@@ -33,13 +33,13 @@ FROM Sales.SalesPerson
 
 4.  
 e) 
-SELECT DISTINCT PersonType 
+SELECT COUNT(DISTINCT PersonType) AS 'CountDistinctPersonType' 
 FROM Person.Person
 WHERE LastName LIKE 'M%' 
-OR EmailPromotion != 1                    --6 rows
+OR EmailPromotion != 1                   
 
 f)
-SELECT TOP 3 *
+SELECT TOP 3 WITH TIES *
 FROM Sales.SpecialOffer
 WHERE StartDate BETWEEN '2013-01-01' AND '2014-01-01'
 ORDER BY DiscountPct DESC
