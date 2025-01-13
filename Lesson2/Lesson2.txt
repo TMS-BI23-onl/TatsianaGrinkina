@@ -36,7 +36,7 @@ e)
 SELECT COUNT(DISTINCT PersonType) AS 'CountDistinctPersonType' 
 FROM Person.Person
 WHERE LastName LIKE 'M%' 
-OR EmailPromotion != 1                   
+OR EmailPromotion NOT LIKE '%1%'                   
 
 f)
 SELECT TOP 3 WITH TIES *
