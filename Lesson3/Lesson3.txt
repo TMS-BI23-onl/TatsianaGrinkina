@@ -1,0 +1,49 @@
+--1)
+SELECT Color, AVG(StandardCost) AS AvgStandardCost
+FROM Production.Product
+GROUP BY Color
+HAVING COUNT(ProductID) >= 40
+
+--2)
+SELECT City, COUNT(AddressID) AS COUNTAddressID
+FROM Person.Address
+GROUP BY City
+
+--3)
+SELECT TOP 5 WITH TIES ProductID, SumQuantity
+FROM (SELECT ProductID, SUM(Quantity) AS SumQuantity
+      FROM Production.ProductInventory
+      GROUP BY ProductID) p
+ORDER BY SumQuantity DESC
+
+--4)
+SELECT Rating, Comments
+FROM Production.ProductReview
+WHERE Rating > (SELECT AVG(Rating) AS AvgRating
+                FROM Production.ProductReview)
+
+--5)
+SELECT ShipRate
+FROM Purchasing.ShipMethod
+WHERE ShipRate > (SELECT Min(ListPrice) AS MinListPrice
+                  FROM Production.Product
+                  WHERE ListPrice > 0)
+
+--6)
+SELECT BusinessEntityID
+FROM Person.Person
+EXCEPT
+SELECT BusinessEntityID
+FROM Sales.PersonCreditCard
+
+
+SELECT BusinessEntityID
+FROM Person.Person
+WHERE BusinessEntityID NOT IN (SELECT BusinessEntityID
+                               FROM Sales.PersonCreditCard
+                               INTERSECT
+                               SELECT BusinessEntityID
+                               FROM Person.Person)
+
+
+
