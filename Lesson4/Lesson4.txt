@@ -1,0 +1,47 @@
+--1)
+SELECT Name,
+       CASE WHEN StandardCost = 0 OR StandardCost IS NULL THEN 'Not for sale'
+	        WHEN StandardCost < 100 THEN '<$100'
+	        WHEN StandardCost < 500 THEN '<$500'
+	   ELSE '>= $500'
+	   END AS PriceRange
+FROM AdventureWorks2017.Production.Product
+
+--2)
+SELECT ppv.ProductID, ppv.BusinessEntityID, pv.Name
+FROM Purchasing.ProductVendor ppv JOIN Purchasing.Vendor pv ON ppv.BusinessEntityID = pv.BusinessEntityID
+WHERE ppv.StandardPrice > '10' AND (pv.Name LIKE '%X%' OR pv.Name LIKE 'N%')
+
+--3)
+SELECT pv.Name, ppv.BusinessEntityID
+FROM Purchasing.ProductVendor ppv LEFT JOIN Purchasing.Vendor pv ON ppv.BusinessEntityID = pv.BusinessEntityID
+WHERE ppv.OnOrderQty IS NULL
+GROUP BY pv.Name, ppv.BusinessEntityID
+
+--4)
+SELECT pp.Name, pp.StandardCost
+FROM Production.Product pp LEFT JOIN Production.ProductModel ppm ON pp.Name = ppm.Name
+WHERE pp.Name LIKE 'LL%'
+
+--5)
+SELECT Name
+FROM Sales.Store
+UNION
+SELECT Name
+FROM Purchasing.Vendor
+ORDER BY Name
+
+
+SELECT DISTINCT s.Name, p.Name
+FROM Sales.Store s FULL JOIN Purchasing.Vendor p ON s.BusinessEntityID = p.BusinessEntityID
+ORDER BY s.Name, p.Name
+
+--6)
+SELECT p.Name
+FROM Sales.SpecialOffer s JOIN Sales.SpecialOfferProduct sp ON s.SpecialOfferID = sp.SpecialOfferID
+                          JOIN Production.Product p ON sp.ProductID = p.ProductID
+GROUP BY p.Name
+HAVING COUNT(sp.SpecialOfferID) > 1
+
+
+
