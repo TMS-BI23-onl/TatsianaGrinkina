@@ -1,0 +1,35 @@
+1. --При каких значениях оконные функции Row Number, Rank и Dense Rank вернут одинаковый результат?
+     
+Значения должны быть уникальными.
+
+2. a)--Найдите информацию из Sales.SalesOrderDetail по заказам 43659,43664.  
+--С помощью оконных функций MAX, MIN, AVG найдем агрегаты по LineTotal для каждого SalesOrderID.
+
+SELECT SalesOrderID, ProductID, LineTotal  
+    ,AVG(LineTotal) OVER (PARTITION BY SalesOrderID) AS "Avg"  
+    ,MIN(LineTotal) OVER (PARTITION BY SalesOrderID) AS "Min"  
+    ,MAX(LineTotal) OVER (PARTITION BY SalesOrderID) AS "Max"  
+FROM Sales.SalesOrderDetail   
+WHERE SalesOrderID IN (43659,43664)
+
+b) --Изучите данные в объекте Sales.vSalesPerson. 
+--Создайте рейтинг cреди продавцов на основе годовых продаж SalesYTD, используя ранжирующую оконную функцию.
+--Добавьте поле Login, состоящий из 3 первых букв фамилии в верхнем регистре + ‘login’ + TerritoryGroup (Null заменить на пустое значение). 
+
+SELECT BusinessEntityID, LastName, SalesYTD, SalesLastYear, CONCAT(LEFT(LastName, 3), 'login', ISNULL(TerritoryGroup, ' ')) AS password
+    ,ROW_NUMBER() OVER (ORDER BY SalesYTD DESC) AS "Row Number"  
+    ,RANK() OVER (ORDER BY SalesYTD DESC) AS Rank			
+    ,DENSE_RANK() OVER (ORDER BY SalesYTD DESC) AS "Dense Rank"  
+    ,ROW_NUMBER() OVER (ORDER BY SalesLastYear DESC) AS "Row Number Last"  
+    ,RANK() OVER (ORDER BY SalesLastYear DESC) AS Rank_Last				
+    ,DENSE_RANK() OVER (ORDER BY SalesLastYear DESC) AS "Dense Rank Last"  
+FROM Sales.vSalesPerson
+
+--Кто возглавляет рейтинг? А кто возглавлял рейтинг в прошлом году (SalesLastYear).
+276 Mitchell, 290 Varkey Chudukatil
+
+c)--Найдите первый будний день следующего месяца (FROM не используем). Нужен стандартный код на все времена.
+
+SELECT CASE WHEN DATENAME(weekday, DATEADD(day, 1, EOMONTH(GETDATE()))) = 'Saturday' THEN DATENAME(weekday, DATEADD(day, 3, EOMONTH(GETDATE())))
+            WHEN DATENAME(weekday, DATEADD(day, 1, EOMONTH(GETDATE()))) = 'Sunday' THEN DATENAME(weekday, DATEADD(day, 2, EOMONTH(GETDATE())))
+			ELSE DATENAME(weekday, DATEADD(day, 1, EOMONTH(GETDATE()))) END AS STATUS
