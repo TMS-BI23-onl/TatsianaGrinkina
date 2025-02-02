@@ -1,0 +1,85 @@
+6.
+ID – числовое поле. Авто заполняется.
+FirstName – имя пациента.
+LastName – фамилия пациента.
+SSN – уникальный идентификатор пациента.
+Email – электронная почта пациента. Формируется по следующему правилу: первая большая буква FirstName + маленькие 3 буквы LastName + @mail.com (например, Akli@mail.com). Полезная ссылка здесь. 
+Temp – температура пациента.
+CreatedDate — дата измерений.
+
+
+CREATE TABLE Patients
+(
+    Patient_ID		INT IDENTITY (1, 1), 
+    First_Name		NVARCHAR(30), 
+    Last_Name		NVARCHAR(30),
+	SSN             uniqueidentifier DEFAULT newid(),
+	Email AS UPPER(LEFT(First_Name, 1))+LOWER(LEFT(Last_Name, 3))+'@mail.com',
+	Temp            FLOAT,
+	Created_Date    DATE
+);
+
+
+7. --Добавить в таблицу несколько произвольных записей. 
+INSERT INTO Patients (First_Name, Last_Name, Temp, Created_Date)
+VALUES
+    ('John','Kovalev','37.5', '2025-01-10'),
+	('John','Kovalev','36.8', '2025-01-12'),
+    ('Steve','Stein','36.6', '2025-01-10'),
+	('Steve','Stein','36.6', '2025-01-11'),
+	('Ken','Barkli','36.8', '2025-01-14')
+
+8. --Добавить поле TempType со следующими значениями ‘< 37°C’,  ‘> 37°C’ на основе значений из поля Temp 
+--( используйте ALTER TABLE ADD column AS ). Посмотрите на данные, которые получились.
+
+ALTER TABLE Patients
+ADD  TempType AS CASE WHEN Temp < 37 THEN '< 37°C'
+ELSE '> 37°C' END
+
+9. --Создать представление Patients_v, показывающее температуру в градусах Фаренгейта (°F = °Cx9/5 + 32)
+
+CREATE VIEW dbo.vPatients
+AS   
+SELECT Patient_ID, First_Name, Last_Name, SSN, Email, Created_Date, (Temp*9/5+32) AS Temp_v
+FROM Patients  
+
+SELECT *
+FROM dbo.vPatients
+
+DROP VIEW dbo.vPatients
+
+10 --Создать функцию, которая возвращает температуру в градусах Фаренгейта (°F = °Cx9/5 + 32), при подаче на вход градусы в Цельсиях.
+
+CREATE FUNCTION dbo.udfPatients(
+    @Temp FLOAT
+)
+RETURNS FLOAT
+AS 
+BEGIN
+    RETURN @Temp*9/5 + 32;
+END;
+
+SELECT dbo.udfPatients (37.5) Temp_udf;
+
+DROP FUNCTION dbo.udfPatients;
+
+11. --Перепишите решение задачи 2c из прошлого дз с использованием переменной, максимально упрощая select.
+DECLARE @Weekday NVARCHAR(15)
+SET @Weekday = DATENAME(weekday, DATEADD(day, 1, EOMONTH(GETDATE())))
+SELECT CASE WHEN @Weekday = 'Saturday' THEN DATENAME(weekday, DATEADD(day, 3, EOMONTH(GETDATE())))
+            WHEN @Weekday = 'Sunday' THEN DATENAME(weekday, DATEADD(day, 2, EOMONTH(GETDATE())))
+			ELSE @Weekday END AS Weekday
+
+DECLARE @Weekday NVARCHAR(15), @Saturday NVARCHAR(15), @Sunday NVARCHAR(15);       
+	  SET @Weekday = DATENAME(weekday, DATEADD(day, 1, EOMONTH(GETDATE())));
+	  SET @Saturday = DATENAME(weekday, DATEADD(day, 3, EOMONTH(GETDATE())));
+	  SET @Sunday = DATENAME(weekday, DATEADD(day, 2, EOMONTH(GETDATE())));
+SELECT CASE WHEN @Weekday = 'Saturday' THEN @Saturday
+            WHEN @Weekday = 'Sunday' THEN @Sunday
+			ELSE @Weekday END AS Weekday
+
+DECLARE @Weekday NVARCHAR(15);
+SET @Weekday = EOMONTH(GETDATE());
+SELECT CASE WHEN DATENAME(weekday, DATEADD(day, 1, @Weekday)) = 'Saturday' THEN DATENAME(weekday, DATEADD(day, 3, @Weekday))
+WHEN DATENAME(weekday, DATEADD(day, 1, @Weekday)) = 'Sunday' THEN DATENAME(weekday, DATEADD(day, 2, @Weekday))
+ELSE DATENAME(weekday, DATEADD(day, 1, @Weekday)) END AS STATUS
