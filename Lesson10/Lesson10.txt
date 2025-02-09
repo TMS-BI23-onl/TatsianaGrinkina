@@ -1,0 +1,82 @@
+2. CREATE PROCEDURE COUNTPEOPLE
+@number_of_rows INT
+AS
+DECLARE @loop_counter INT = 1;
+BEGIN
+SET NOCOUNT ON;
+WHILE (@loop_counter<=@number_of_rows)
+BEGIN
+INSERT INTO PEOPLE (number, FirstName, LastName)
+SELECT
+FLOOR (RAND()*1000000) AS number,
+substring(convert(nvarchar(32)), hashbytes('MD5', STR(RAND()*1000000)), 2), 1, 20) AS FirstName,
+substring(convert(nvarchar(32)), hashbytes('MD5', STR(RAND()*1000000)), 2), 1, 20) AS LastName;
+SET @loop_counter=@loop_counter+1;
+END;
+END;
+
+-----------------------------------------------------------------------------
+
+DECLARE @Test  TABLE
+(FirstName NVARCHAR(30),
+LastName NVARCHAR(30)); 
+
+DECLARE @FirstName INT, @LastName INT
+SET @FirstName = 0
+SET @LastName = 0
+WHILE @FirstName < 1000000 AND @LastName < 1000000
+BEGIN
+    SET @FirstName = @FirstName + 1
+	SET @LastName = @LastName + 1
+    INSERT INTO @Test (FirstName, LastName)
+        VALUES(CAST(@FirstName AS NVARCHAR(30)), CAST(@LastName AS NVARCHAR(30)))
+END
+
+----------------------------------------------------------------------------------
+
+CREATE TABLE PEOPLE (
+    FirstName	NVARCHAR(20),
+    LastName	NVARCHAR(20));
+DECLARE @i INT = 1;
+DECLARE 
+    @FirstName	VARCHAR(20),
+    @LastName		VARCHAR(20);
+WHILE @i <= 1000000
+BEGIN
+    SET @FirstName = (
+        SELECT TOP 1 tran_type_name 
+        FROM (VALUES 
+            ('purchase'), 
+            ('refund'), 
+            ('transfer'), 
+            ('payment'), 
+            ('deposit'), 
+            ('withdrawal')
+        ) AS TblTranTypes(tran_type_name)
+        ORDER BY NEWID()
+    );
+
+    SET @LastName = (
+        SELECT TOP 1 contact_type 
+        FROM (VALUES 
+            ('online'), 
+            ('mobile'), 
+            ('in-store'), 
+            ('phone')
+        ) AS sources(contact_type)
+        ORDER BY NEWID()
+    );
+	    INSERT INTO PEOPLE 
+        (FirstName, LastName)
+    VALUES (
+        @FirstName,
+		@LastName
+    );
+        SET @i = @i + 1;
+END;
+
+3. Познакомьтесь с обобщенным табличным выражением WITH. Когда можем использовать данную структуру? Чем отличается от подзапроса? 
+
+Для написания обобщённого табличного выражения используется оператор WITH.
+Обобщённое табличное выражение доступно только во время выполнения операторов SELECT, INSERT, UPDATE, DELETE или MERGE.
+Обобщённое табличное выражение содержит в себе подзапросы.
