@@ -1,0 +1,12 @@
+USE [AdventureWorksDW2014]
+GO
+--Change 1000000 to the number of your preference for your needs
+SELECT TOP 1000000
+      c1.[FirstName],
+	  c2.[LastName]
+ 
+  FROM [dbo].[DimCustomer] c1
+CROSS JOIN
+DimCustomer c2
+
+https://www.sqlshack.com/how-to-generate-random-sql-server-test-data-using-t-sql/
