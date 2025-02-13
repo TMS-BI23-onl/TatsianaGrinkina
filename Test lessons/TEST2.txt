@@ -18,12 +18,9 @@ FROM [HumanResources].[Employee]
 
 3) Вывести самый дорогой продукт для каждого цвета из [Production].[Product] (3 способа)
 
---Найти самый дорогой продукт (поле StandardCost) из Production.Product. (4 способа
-
 SELECT Name, StandardCost
 FROM Production.Product
 WHERE StandardCost = (SELECT MAX(StandardCost) FROM Production.Product)
-GROUP BY Color
 
 
 SELECT * 
