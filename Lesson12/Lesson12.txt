@@ -1,0 +1,15 @@
+3.--Напишите скрипт для суммы OrderQty для каждого года и зимних месяцев из Production.WorkOrder в виде транспонированной матрицы:
+
+SELECT YEAR, cast([01] AS nvarchar(30)) AS January, cast([02] AS nvarchar(30)) AS February, cast([12] AS nvarchar(30)) AS December
+FROM 
+(SELECT OrderQty, YEAR(ModifiedDate) AS YEAR, month(ModifiedDate) AS MONTH
+    FROM Production.WorkOrder
+) AS SourceTable 
+ PIVOT
+( 
+	SUM(OrderQty)
+	FOR MONTH IN ([01], [02], [12])
+) AS PVT
+ORDER BY YEAR
+
+4. I don't understand how to solve this task
