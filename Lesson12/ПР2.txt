@@ -1,0 +1,56 @@
+3. Вывести самый дорогой продукт для каждого цвета из [Production].[Product] (3 способа)
+
+SELECT Name, Color, max_cost
+FROM (SELECT Name, Color, StandardCost, MAX(StandardCost) OVER (PARTITION BY Color) as max_cost
+     FROM Production.Product) t
+WHERE StandardCost=max_cost
+
+
+
+SELECT Name, Color, StandardCost
+FROM  (SELECT Name, StandardCost, Color, RANK() OVER (PARTITION BY Color ORDER BY StandardCost DESC) AS rn
+      FROM Production.Product) AS t 
+WHERE rn = 1
+
+
+With Top_Products as
+		(Select	Name, Color, StandardCost,
+		RANK() OVER(PARTITION BY Color ORDER BY StandardCost DESC) Rn
+		from Production.Product
+		)
+SELECT	Name, Color, StandardCost
+FROM Top_Products
+WHERE Rn=1
+
+
+
+SELECT Name, Color, StandardCost
+FROM (SELECT Name, Color, StandardCost,
+			CASE WHEN StandardCost = MAX(StandardCost) OVER (PARTITION BY Color)
+			THEN 'TOP' 
+			ELSE 'NO'
+			END AS Sub_Result
+	FROM	Production.Product
+	) Main_Result
+WHERE Sub_Result='TOP'
+
+
+
+
+
+4. 8  Ресторан
+Требования:
+7 сущностей + придумать 2 задачи
+
+(sale: sale_id, dish_id, waiter_id, customer_id, quantity, price, saledate, payment_id
+waiter: waiter_id, name, datebirth
+dish: dish_id, name, type_id
+type: type_id, type
+customer: customer_id, name, passport, phone, email, gender
+feedback: feedback_id, dish_id, customer_id, rating
+payment: payment_id, payment_method)
+
+
+Вывести рейтинг и среднюю стоимость блюд по типу с 1 по 31 декабря 2024 г.
+Какая посещаемость ресторана каждую субботу января 2025 г.
+
