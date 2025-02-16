@@ -1,0 +1,77 @@
+2. --Решите следующую задачу. 
+--Дана таблица людей People. Поля: ID, FirstName, LastName,  ID_Father, ID_Mother.
+--Для всех Дмитриев выведите их ФИО и ФИО их отцов.
+
+SELECT p.FirstName, p.LastName, f.FirstName, f.LastName
+FROM People P
+	 JOIN Father F ON p.id_Father = f.Id
+	 WHERE p.FirstName LIKE 'Дмитрий'
+
+3. --Оператор MERGE. Выполните следующий код
+
+CREATE TABLE Teams(
+	team_id	int identity,
+	team_name	varchar(20),
+	team_code	char(3),
+	main_sponsor	nvarchar(30),
+	director_name	nvarchar(30)
+)
+
+INSERT INTO Teams (team_name, team_code, main_sponsor, director_name)
+VALUES
+('Ferrari', 'FER', 'HP', 'Fred Vasseur'),
+('Aston Martin', 'AMR', 'Cognizant', 'Lawrence Stroll'),
+('McLaren', 'MCL', 'OKX', 'Andreas Seidl'),
+('Red Bull', 'RBR', 'Oracle', 'Christian Horner')
+
+ С помощью оператора MERGE приведите таблицу Teams к виду:
+Team_id	Team_name	Team_code	Main_sponsor	Director_name
+1	Ferrari	FER	HP	Fred Vasseur
+2	Aston Martin	AMR	Aramco	Lawrence Stroll
+3	McLaren	MCL	OKX	Andrea Stella
+4	Red Bull Racing	RBR	Oracle	Dr Marco
+5	Mercedes AMG	AMG	Petronas	Toto Wolff
+
+
+
+SELECT *
+INTO Teams2
+FROM Teams
+
+SELECT *
+FROM Teams
+
+SELECT *
+FROM Teams2
+
+UPDATE Teams2
+SET main_sponsor='Aramco' 
+WHERE main_sponsor='Cognizant'
+
+UPDATE Teams2
+SET director_name='Andrea Stella' 
+WHERE director_name='Andreas Seidl'
+
+UPDATE Teams2
+SET team_name='Red Bull Racing' 
+WHERE team_name='Red Bull'
+
+UPDATE Teams2
+SET Director_name='Dr Marco' 
+WHERE Director_name='Christian Horner'
+
+INSERT INTO Teams2 (team_name, team_code, main_sponsor, director_name)
+VALUES
+('Mercedes AMG', 'AMG', 'Petronas', 'Toto Wolff')
+
+MERGE Teams target
+USING Teams2 source ON target.team_code=source.team_code
+
+WHEN MATCHED AND (target.team_name !=source.team_name OR target.main_sponsor !=source.main_sponsor OR target.director_name !=source.director_name)
+	THEN UPDATE SET target.team_name =source.team_name,
+					target.main_sponsor  =source.main_sponsor,
+					target.director_name =source.director_name
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (team_name, team_code, main_sponsor, director_name)
+	VALUES (source.team_name, source.team_code, source.main_sponsor, source.director_name)
+	;
