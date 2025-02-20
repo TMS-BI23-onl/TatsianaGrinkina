@@ -1,7 +1,9 @@
 Проверочная работа 4
 1.Написать запрос на добавление в таблицу manufacturer нового производителя HP из Америки.
 INSERT INTO manufacturer ([Name], [country_id])
-VALUES ( 'HP', 4)
+SELECT  HP, country_id
+FROM country
+WHERE NAME = 'Америка'
 
 2.Написать запрос, благодаря которому возраст пользователя Андрей в таблице user уменьшится в 3 раза.
 UPDATE USER 
