@@ -1,0 +1,89 @@
+CREATE TABLE Count_function (
+	function_name	nvarchar(20),
+	function_count	int
+)
+
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Alex
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.Function_count + 1
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (Function_name,function_count)
+    VALUES (source.Alex, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Carlos
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.Carlos NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.Carlos, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Charles
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.Charles NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.Charles, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Daniel
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.Daniel NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.Daniel, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Esteban
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.Esteban NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.Esteban, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Fred
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.Fred NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.Fred, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.George
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.George NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.George, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Lando
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.Lando NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.Lando, 1)
+	;
+
+MERGE Count_function target
+USING dbo.data_for_merge source ON target.function_name=source.Lewis
+WHEN MATCHED
+	THEN UPDATE SET target.function_count = target.function_count + 1
+WHEN NOT MATCHED BY TARGET AND (source.Lewis NOT LIKE 'NULL')
+	THEN INSERT (function_name, function_count)
+	VALUES (source.Lewis, 1)
+	;
+
+SELECT *
+FROM Count_function
