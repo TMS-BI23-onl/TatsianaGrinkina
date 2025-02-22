@@ -37,11 +37,12 @@ WHERE Price=max_cost
 
 4.Написать запрос на выборку всех пользователей с телефонами, начинающимися на +3 и заканчивающимися на 4, либо с возрастом > 35.
 SELECT user_id
-FROM USER u JOIN Phone p ON u.Id=p.user_id
+FROM USER u LEFT JOIN Phone p ON u.Id=p.user_id
 WHERE p.Name LIKE '+3%4' OR u.age > 35
 
 5.Найти топ 5 пользователей, кто купил больше всего продуктов.
-SELECT TOP 5 WITH TIES Name
+SELECT TOP 5 Name, SUM(Count) AS S
 FROM USER u JOIN Order o ON u.id=o.user_id 
             JOIN Product p ON o.product_id=p.id
-HAVING MAX(p.Count) OVER (PARTITION Product_id ORDER BY USER_id)
+GROUP BY Name
+ORDER BY S DESC
